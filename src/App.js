@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
-
+import { useState, useEffect } from "react";
 function App() {
+  const [issues, setIssues] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageNum = 1;
+  useEffect(() => {
+    fetch(
+      `https://api.github.com/repos/rails/rails/issues?page=${pageNum}&per_page=30`
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        setIssues(json);
+      })
+      .catch(() => alert("Request Failed"));
+  }, [pageNum]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {issues.map((data) => {
+        return (
+          <ul>
+            <li>{data.title}</li>
+            <li>{data.body}</li>
+          </ul>
+        );
+      })}
     </div>
   );
 }
