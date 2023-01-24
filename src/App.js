@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Routes, Link, NavLink, Route } from "react-router-dom";
 import Issues from "./Components/Issues";
 import NavButtons from "./Components/NavButtons";
+import Issue from "./Components/Issue";
 function App() {
   const [issues, setIssues] = useState([]);
+  const [issue, setIssue] = useState({});
   const [page, setPage] = useState(1);
   useEffect(() => {
     fetch(
@@ -39,7 +41,23 @@ function App() {
       </div>
       <Routes>
         <Route index />
-        <Route path="/issues" element={<Issues issues={issues} />} />
+        <Route
+          path="/issues"
+          element={
+            <Issues
+              issue={(title, body, number, comments_url) =>
+                setIssue({
+                  title: title,
+                  body: body,
+                  number: number,
+                  comments_url: comments_url,
+                })
+              }
+              issues={issues}
+            />
+          }
+        />
+        <Route path="/issues/:number" element={<Issue issue={issue} />} />
       </Routes>
       <NavButtons
         page={page}
